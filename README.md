@@ -60,7 +60,7 @@ The script has two parts. Firstly performing some functions from the `S.BCFS` so
 
 - Concatenate all Elite game binaries
 - Compute checksum for Commander data
-` Poke Commander checksum value into binary
+- Poke Commander checksum value into binary
 - Compute checksum for all game code except boot header
 - Poke checksum value into binary
 - Encrypt all game code except boot header with cycling XOR value (0-255)
@@ -181,7 +181,7 @@ Although the binary files output are identical, the build process is *brittle* m
 The next steps are:
 
 - Remove code requiring checksums and copy protection to allow source to be modified freely
-- Improve whitespacing for readability
+- ~~Improve whitespacing for readability~~
 - Improve label names for readaibility
 - Commenting of critical functions
 - Add BBC Disk, Master and 2nd processor versions to build
