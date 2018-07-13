@@ -51,21 +51,21 @@ Y=96
 org ZP
 .RAND   skip 4  ;=FNZT(4)
 .TRTB%  skip 2  ;	skip 2	;=FNZ2
-.T1	skip 1	;=FNZ
-.SC	skip 2	;=FNZ2
+.T1	    skip 1	;=FNZ
+.SC	    skip 2	;=FNZ2
 SCH=SC+1
 .XX16   skip 18 ;=FNZT(18)
 .P      skip 3  ;=FNZT(3)
 .XX0	skip 2	;=FNZ2
 .INF	skip 2	;=FNZ2
-.V	skip 2	;=FNZ2
-.XX	skip 2	;=FNZ2
-.YY	skip 2	;=FNZ2
+.V	    skip 2	;=FNZ2
+.XX	    skip 2	;=FNZ2
+.YY	    skip 2	;=FNZ2
 .SUNX	skip 2	;=FNZ2
 .BETA	skip 1	;=FNZ
 .BET1	skip 1	;=FNZ
-.XC	skip 1	;=FNZ
-.YC	skip 1	;=FNZ
+.XC	    skip 1	;=FNZ
+.YC	    skip 1	;=FNZ
 .QQ22	skip 2	;=FNZ2
 .ECMA	skip 1	;=FNZ
 .XX15   skip 6  ;=FNZT(6)
@@ -122,18 +122,18 @@ K6=K5+4
 .BET2	skip 2	;=FNZ2
 .DELTA	skip 1	;=FNZ
 .DELT4	skip 2	;=FNZ2
-.U	skip 1	;=FNZ
-.Q	skip 1	;=FNZ
-.R	skip 1	;=FNZ
-.S	skip 1	;=FNZ
+.U	    skip 1	;=FNZ
+.Q	    skip 1	;=FNZ
+.R	    skip 1	;=FNZ
+.S	    skip 1	;=FNZ
 .XSAV	skip 1	;=FNZ
 .YSAV	skip 1	;=FNZ
 .XX17	skip 1	;=FNZ
 .QQ11	skip 1	;=FNZ
-.ZZ	skip 1	;=FNZ
+.ZZ	    skip 1	;=FNZ
 .XX13	skip 1	;=FNZ
 .MCNT	skip 1	;=FNZ
-.DL	skip 1	;=FNZ
+.DL	    skip 1	;=FNZ
 .TYPE	skip 1	;=FNZ
 .JSTX	skip 1	;=FNZ
 .JSTY	skip 1	;=FNZ
@@ -161,17 +161,17 @@ org WP
 .MANY   skip 14 ;=FNWT(14)
 SSPR=MANY+SST
 .ECMP   skip 1  ;=FNW
-.MJ   skip 1  ;=FNW
+.MJ     skip 1  ;=FNW
 CABTMP=MANY
 .LAS2   skip 1  ;=FNW
 .MSAR   skip 1  ;=FNW
 .VIEW   skip 1  ;=FNW
-.LASCT   skip 1 ;=FNW
-.GNTMP   skip 1 ;=FNW
-.HFX   skip 1  ;=FNW
-.EV   skip 1  ;=FNW
-.DLY   skip 1  ;=FNW
-.de   skip 1  ;=FNW
+.LASCT  skip 1 ;=FNW
+.GNTMP  skip 1 ;=FNW
+.HFX    skip 1  ;=FNW
+.EV     skip 1  ;=FNW
+.DLY    skip 1  ;=FNW
+.de     skip 1  ;=FNW
 T=&D1
 XX2=&D2
 K3=XX2
@@ -191,7 +191,7 @@ LSX=LSO
 
 .MCH    skip 1  ;=FNWFNW
 
-.FSH skip 1  ;=FNW
+.FSH    skip 1  ;=FNW
 .ASH	skip 1	;=FNW
 .ENERGY	skip 1	;=FNW
 \\REMFF
@@ -205,26 +205,26 @@ LSX=LSO
 .QQ29	skip 1	;=FNW
 .gov	skip 1	;=FNW
 .tek	skip 1	;=FNW
-.SLSP    skip 2  ;=FNW2
+.SLSP   skip 2  ;=FNW2
 .XX24	skip 1	;=FNW
 .ALTIT	skip 1	;=FNW
 VEC=&7FFE
 svn=&7FFD
 
-.QQ2 skip 6  ;=FNWT(6)
+.QQ2    skip 6  ;=FNWT(6)
 .QQ3	skip 1	;=FNW
 .QQ4	skip 1	;=FNW
 .QQ5	skip 1	;=FNW
-.QQ6 skip 2  ;=FNW2
-.QQ7 skip 2  ;=FNW2
-.QQ8 skip 2  ;=FNW2
+.QQ6    skip 2  ;=FNW2
+.QQ7    skip 2  ;=FNW2
+.QQ8    skip 2  ;=FNW2
 .QQ9	skip 1	;=FNW
 .QQ10	skip 1	;=FNW
 .NOSTM	skip 1	;=FNW
 
 \\ WORKSPACE at T%=&300
 ORG T%
-.TP	skip 1	;=FNTP
+.TP	    skip 1	;=FNTP
 .QQ0	skip 1	;=FNTP
 .QQ1	skip 1	;=FNTP
 .QQ21   skip 6  ;=FNTPT(6)
@@ -276,7 +276,6 @@ XX3=256
 \T%=T%+N%
 \=T%-N%
 
-
 ;P%=C%
 ;O%=W%
 ORG C_A%
@@ -285,10 +284,10 @@ H_A%=L%           ;+P%-C% as P%=C% above
 \[OPTZ
 
 .S%
- EQUW  TT170
- EQUW  TT26
- EQUW  IRQ1
- EQUW  BR1
+ EQUW TT170
+ EQUW TT26
+ EQUW IRQ1
+ EQUW BR1
 
 .COMC brk
 .DNOIZ brk
@@ -1587,7 +1586,7 @@ J%=P%
 \[OPTZ
 
 .NA%
-EQUS "JAMESON"
+ EQUS "JAMESON"
  EQUB 13
  EQUB 0
 
@@ -1597,34 +1596,34 @@ EQUS "JAMESON"
  EQUW &B753 \Base seed
 ;EQUD(((&E8030000)AND(NOTQ%))+((&CA9A3B)ANDQ%))\CASH,&80969800
 IF Q%
- EQUD  &CA9A3B
+ EQUD &CA9A3B
 ELSE
- EQUD  &E8030000
+ EQUD &E8030000
 ENDIF
  EQUB 70 ;fuel
- EQUB  0 ;COK-UP
+ EQUB 0 ;COK-UP
  EQUB 0 ;GALACTIC COUNT
- EQUB  POW+(128ANDQ%)
- EQUB  (POW+128)ANDQ%
+ EQUB POW+(128ANDQ%)
+ EQUB (POW+128)ANDQ%
  EQUB 0
  EQUB 0
  EQUW 0 ;LASER
- EQUB  22+(15ANDQ%) \37 CRGO
+ EQUB 22+(15ANDQ%) \37 CRGO
  EQUD 0
  EQUD 0
  EQUD 0
  EQUD 0
  EQUB 0\crgo
- EQUB  Q% ;ECM
- EQUB  Q% ;BST
- EQUB  Q%AND127 ;BOMB
- EQUB  Q%AND1 ;ENGY++
- EQUB  Q% ;DCK COMP
- EQUB  Q% ;GHYP
- EQUB  Q% ;ESCP
- EQUD  FALSE ;EXPAND
- EQUB  3+(Q%AND1) ;MISSILES
- EQUB  FALSE ;FIST
+ EQUB Q% ;ECM
+ EQUB Q% ;BST
+ EQUB Q% AND 127 ;BOMB
+ EQUB Q% AND 1 ;ENGY++
+ EQUB Q% ;DCK COMP
+ EQUB Q% ;GHYP
+ EQUB Q% ;ESCP
+ EQUD FALSE ;EXPAND
+ EQUB 3+(Q%AND1) ;MISSILES
+ EQUB FALSE ;FIST
  EQUB 16
  EQUB 15
  EQUB 17
@@ -1641,9 +1640,9 @@ ENDIF
  EQUB 9
  EQUB 8
  EQUB 0
- EQUB  0 ;QQ26
- EQUW  0 ;TALLY
- EQUB  128 ;SVC
+ EQUB 0 ;QQ26
+ EQUW 0 ;TALLY
+ EQUB 128 ;SVC
 
 PRINT "NT%=", ~NT%
 PRINT "J%=", ~J%
@@ -1662,10 +1661,10 @@ CH%=&92     ; HARDCODED CHECKSUM FOR BUILD
 ENDIF
 
 .CHK2
- EQUB  CH% EOR&A9
+ EQUB CH% EOR &A9
 
 .CHK
- EQUB  CH%
+ EQUB CH%
 
 .UNIV
 FORI%,0,12
@@ -6828,7 +6827,7 @@ MAPCHAR '8', '8'EOR&A4
 MAPCHAR '4', '4'EOR&A4
 
 .BDOLLAR
-EQUS "(C)Bell/Braben1984"     ; TODO EOR &A4
+ EQUS  "(C)Bell/Braben1984"     ; TODO EOR &A4
 
 MAPCHAR '(', '('
 MAPCHAR 'C', 'C'
@@ -8751,17 +8750,17 @@ H_F%=L%+P%-C_A%
  BEQ KSL1
 
 .SFX
-EQUS &12,&01,&00,&10   ;FNS("12010010")
-EQUS &12,&02,&2C,&08    ;FNS("12022C08")
-EQUS &11,&03,&F0,&18    ;FNS("1103F018")
-EQUS &10,&F1,&07,&1A    ;FNS("10F1071A")
+ EQUS  &12,&01,&00,&10   ;FNS("12010010")
+ EQUS  &12,&02,&2C,&08    ;FNS("12022C08")
+ EQUS  &11,&03,&F0,&18    ;FNS("1103F018")
+ EQUS  &10,&F1,&07,&1A    ;FNS("10F1071A")
 
-EQUS &03,&F1,&BC,&01    ;FNS("03F1BC01")
-EQUS &13,&F4,&0C,&08    ;FNS("13F40C08")
-EQUS &10,&F1,&06,&0C    ;FNS("10F1060C")
-EQUS &10,&02,&60,&10    ;FNS("10026010") HYP
-EQUS &13,&04,&C2,&FF    ;FNS("1304C2FF")
-EQUS &13,&00,&00,&00    ;FNS("13000000")
+ EQUS  &03,&F1,&BC,&01    ;FNS("03F1BC01")
+ EQUS  &13,&F4,&0C,&08    ;FNS("13F40C08")
+ EQUS  &10,&F1,&06,&0C    ;FNS("10F1060C")
+ EQUS  &10,&02,&60,&10    ;FNS("10026010") HYP
+ EQUS  &13,&04,&C2,&FF    ;FNS("1304C2FF")
+ EQUS  &13,&00,&00,&00    ;FNS("13000000")
 
 .RESET \"�<<<<"
  JSR ZERO
@@ -9991,7 +9990,7 @@ TXS
  BNE MESS
 
 .QQ16
-EQUS"ALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION"
+ EQUS "ALLEXEGEZACEBISOUSESARMAINDIREA?ERATENBERALAVETIEDORQUANTEISRION"
 
 .QQ23
 \Prxs
@@ -11856,5 +11855,5 @@ PRINT "RELOAD AT H%=", ~H_G%
 PRINT "S.ELTG ",~C_G%," ",~P%," ",~L%," ",~H_G%
 SAVE "output/ELTG.bin", C_G%, P%, L%
 
-PRINT~C_A%, F%, S%,D%-F%
-PRINT"G d."
+PRINT ~C_A%, F%, S%,D%-F%
+PRINT "G d."
