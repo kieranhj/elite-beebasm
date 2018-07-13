@@ -182,7 +182,7 @@ The next steps are:
 
 - Remove code requiring checksums and copy protection to allow source to be modified freely
 - ~~Improve whitespacing for readability~~
-- Improve label names for readaibility
+- Improve label names for readability
 - Commenting of critical functions
 - Add BBC Disk, Master and 2nd processor versions to build
 
