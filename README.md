@@ -2,17 +2,17 @@
 A port of the original BBC Elite source code from BASIC assembler to BeebAsm assembler for modern PC development environment.
 
 ## Background
-The original source files for BBC Elite can be found on [Ian Bell's personal web](http://blah).
+The original source files for BBC Elite can be found on [Ian Bell's personal web](http://www.iancgbell.clara.net/elite/).
 
 The following archives are available:
 
-- [Cassette sources](link) as DFS disk image
-- [Cassette sources](link) as text files
-- [BBC 2nd processor sources](link) as DFS disk image
-- [Original Elite ship sources](link) as DFS disk image
-- [Elite 2 ship sources](link) as DFS disk image
-- [Original BBC Disk version](link) of Elite (game only)
-- [Master 128 and 2nd Processor versions](link) of Elite (game only)
+- [Cassette sources](http://www.elitehomepage.org/archive/a/a4080602.zip) as DFS disk image
+- [Cassette sources](http://www.elitehomepage.org/archive/a/a4080610.zip) as text files
+- [BBC 2nd processor sources](http://www.elitehomepage.org/archive/a/a5022201.zip) as DFS disk image
+- [Original Elite ship sources](http://www.elitehomepage.org/archive/a/a4100082.zip) as DFS disk image
+- [Elite 2 ship sources](http://www.elitehomepage.org/archive/a/b80000C0.zip) as DFS disk image
+- [Original BBC Disk version](http://www.elitehomepage.org/archive/a/a4100000.zip) of Elite (game only)
+- [Master 128 and 2nd Processor versions](http://www.elitehomepage.org/archive/a/b8020001.zip) of Elite (game only)
 
 As the game was written on 8-bit machines with very limited RAM and disk storage (the game started life on an Acorn Atom) the source code is incredibly terse, densely packed and effectively unreadable to anyone but the original authors (even then, I'd imagine both would struggle some 30+ years later..!)
 
@@ -96,7 +96,7 @@ Simply define the location of your `beebasm.exe` and `python.exe` at the head of
 
 The `crc32dos.exe` is included to verify that the output files are binary identical with the original sources.
 
-The following built binaries were extracted from the [Cassette sources disk image](link):
+The following built binaries were extracted from the [Cassette sources disk image](http://www.elitehomepage.org/archive/a/a4080602.zip):
 
 ```
  CRC 32     File Size   Filename
