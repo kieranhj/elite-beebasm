@@ -21,3 +21,7 @@ $RECYCLE.BIN/
 # =========================
 # Operating System Files
 # =========================
+.vscode/tasks.json
+compile.txt
+elite-beebasm.code-workspace
+run.bat
