@@ -1,3 +1,4 @@
 @echo off
-crc32dos.exe extracted
-crc32dos.exe output
+SETLOCAL
+SET PYTHON=C:\Home\Python27\python.exe
+make verify

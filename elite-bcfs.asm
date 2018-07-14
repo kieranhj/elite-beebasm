@@ -62,7 +62,7 @@ PRINT "checksum0=",~P%
 SKIP 1      ; byte skipped for checksum later
 .ships
 PRINT "ships=",~P%
-INCBIN "data\SHIPS.bin"
+INCBIN "data/SHIPS.bin"
 .end
 
 PRINT "P%=",~P%
