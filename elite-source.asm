@@ -153,6 +153,8 @@ K6=K5+4
 .RAT2	skip 1	;=FNZ
 .K2     skip 4  ;=FNZT(4)
 
+PRINT "ZERO PAGE VARIABLES FROM ",~ZP," to ",~P%
+
 ;IFZ=4THENZ=6ELSEZ=4
 
 \\ WORKSPACE at WP=&D40
@@ -222,6 +224,8 @@ svn=&7FFD
 .QQ10	skip 1	;=FNW
 .NOSTM	skip 1	;=FNW
 
+PRINT "WP WORKSPACE FROM ",~WP," to ",~P%
+
 \\ WORKSPACE at T%=&300
 ORG T%
 .TP	    skip 1	;=FNTP
@@ -255,6 +259,8 @@ SX=P%   ; T%
 SXL=SX+NOST+1
 XX3=256
 \\REM&70
+
+PRINT "T% WORKSPACE FROM ",~T%," to ",~P%," possibly ",~SXL
 
 \ ZP allocations
 \DEFFNZ=FNZT(1)
