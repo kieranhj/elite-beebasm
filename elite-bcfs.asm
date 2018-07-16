@@ -3,12 +3,12 @@
 \* ELTcode
 \************************************************
 
-C%=&F40
-L%=&1128
-D%=&563A
+C%=&F40             ; assembly address of Elite game code (elite-source.asm)
+L%=&1128            ; load address of Elite game code (after LBL fn)
+D%=&563A            ; hard-coded size of Elite game code (elite-source.asm)
 ZP=&70
 
-ORG &1100
+ORG &1100           ; load address of ELTcode
 
 \ *****************************************************************************
 \ Code entered at LBL+1 (&1101) as defined in elite-loader.asm CHECKV

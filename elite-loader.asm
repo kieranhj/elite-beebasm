@@ -1,30 +1,30 @@
-\************************************************
+\ *****************************************************************************
 \* Source Code for ELITE  (the loader)
-\************************************************
+\ *****************************************************************************
 
 DISC=TRUE
 PROT=FALSE
 HIMEM=&4000
 ;DIMTEMP%256
-LOD%=&1100
+LOD%=&1100      ; load address of ELTcode (elite-bcfs.asm)
 
-C%=&F40
+C%=&F40         ; assembly address of Elite game code (elite-source.asm)
 S%=C%
-L%=LOD%+&28
-D%=&563A
-LC%=&6000-C%
+L%=LOD%+&28     ; load address Elite game code (elite-bcfs.asm)
+D%=&563A        ; hardcoded size of Elite game code (elite-source.asm)
+LC%=&6000-C%    ; maximum size of Elite game code
 
 svn=&7FFD
 len1=15
 len2=18
 len=len1+len2
 
-LE%=&B00
+LE%=&B00        ; address of second stage loader (containing ENTRY2)
 
 ;REM  Move Mover to here while CODE loading
 
 IF DISC
-LL%=&E00+&300
+LL%=&E00+&300   ; load address of loader
 ELSE
 LL%=&E00
 ENDIF
@@ -34,7 +34,11 @@ CODE=LL%        ; we can assemble in place
 
 ;REM Where this loader loads
 
-MOS=S%+8
+\ *****************************************************************************
+\ MOS definitions
+\ *****************************************************************************
+
+MOS=S%+8        ; unused - was part of OS version test
 TRTB%=4         ; MOS key translation table
 NETV=&224
 
@@ -44,6 +48,10 @@ OSWORD=&FFF1
 SCLI=&FFF7
 IRQ1V=&204
 osprnt=&234
+
+\ *****************************************************************************
+\ ZERO PAGE variables
+\ *****************************************************************************
 
 ZP=&70
 P=&72
@@ -60,10 +68,18 @@ EXCN=&85
 
 FF=&FF
 
+\ *****************************************************************************
+\ SYSVIA definitions
+\ *****************************************************************************
+
 VIA=&FE40
 USVIA=VIA
 VSCAN=57-1
 VEC=&7FFE
+
+\ *****************************************************************************
+\ Concatenate data files used by loader
+\ *****************************************************************************
 
 ;OSCLI("L.:0.WORDS9 "+STR$~CODE)
 ORG CODE
@@ -96,7 +112,7 @@ ORG LL%+&400+&800+&300
 O%=CODE+&400+&800+&300
 
 \ *****************************************************************************
-\ Execution address of loader
+\ LOADER CODE START
 \ *****************************************************************************
 
 .run
@@ -160,6 +176,10 @@ ENDMACRO
  EQUB 13
  EQUB &B0
 
+\ *****************************************************************************
+\ Addresses of various functions used by loader to obfuscate
+\ *****************************************************************************
+
 .oscliv
  EQUW &FFF7
 
@@ -201,7 +221,7 @@ ENDMACRO
  CLD
 
 \ *****************************************************************************
-\ TAPE
+\ TAPE protection
 \ *****************************************************************************
 
 IF DISC=FALSE
@@ -638,7 +658,7 @@ IF DISC
 ENDIF
 
 \ *****************************************************************************
-\ ENTRY2 already pushed onto stack at sart of BLOCK code
+\ ENTRY2 already pushed onto stack at start of BLOCK code
 \ *****************************************************************************
 
  RTS  \ENTRY2 on stack already
@@ -950,35 +970,52 @@ ENDIF
 \
 \ *****************************************************************************
 
+\ *****************************************************************************
+\ This code all located at &B00
+\ *****************************************************************************
+
 .UU%
 
 Q%=P%-LE%
 ORG LE%                 ;P%=LE%
 
 .CHECKbyt
- BRK
+ BRK        ; CHECKbyt checksum value calcuated in elite-checksum.py
 
 .MAINSUM
  EQUB &CB   ; hard-coded checksum value of &28 bytes at LBL in elite-bcfs.asm (ELThead)
  EQUB 0     ; MAINSUM checksum value calculated in elite-checksum.py
 
 .FOOLV
- EQUW FOOL
+ EQUW FOOL  ; address of fn with just RTS
 
 .CHECKV
- EQUW LOD%+1
+ EQUW LOD%+1    ; address of LBL fn in elite-bcfs.asm (ELThead)
+
+\ *****************************************************************************
+\ ULA Palette colours for MODE 5 portion of screen
+\ *****************************************************************************
 
 .block1
  EQUD &A5B5E5F5
  EQUD &26366676
  EQUD &8494C4D4
 
+\ *****************************************************************************
+\ ULA Palette colours for MODE 4 portion of screen
+\ *****************************************************************************
+
 .block2
  EQUD &A0B0C0D0
  EQUD &8090E0F0
  EQUD &27376777 \ Colours for interrupts
 
+\ *****************************************************************************
+\ PRINT fn for OSPRNT
+\ *****************************************************************************
+
 .TT26\ PRINT  Please tidy this up!
+{
  STA K3
  TYA
  PHA
@@ -1062,6 +1099,7 @@ ORG LE%                 ;P%=LE%
  STA (ZP),Y
  DEY
  BPL RRL1
+}
 
 .RR4
  PLA
@@ -1077,6 +1115,10 @@ ORG LE%                 ;P%=LE%
  lda #7
  JSR osprint
  JMP RR4
+
+\ *****************************************************************************
+\ Following code all encrypted in elite-checksum.py
+\ *****************************************************************************
 
 .TUT  \EOR here onward
 
@@ -1145,6 +1187,10 @@ ENDIF
  LDA #0
  STA svn
 
+\ *****************************************************************************
+\ Decrypt and copy down all ELITE code from &1128 to &F40
+\ *****************************************************************************
+
  LDX #(LC% DIV256)
  LDA #(L% MOD256)
  STA ZP
@@ -1167,6 +1213,10 @@ ENDIF
  DEX
  BPL ML1  \Move code down (d)
 
+\ *****************************************************************************
+\ Set BRKV and WRCHV to point at BR1 and TT26 fns in elite-source.asm
+\ *****************************************************************************
+
  LDA S%+6
  STA &202
  LDA S%+7
@@ -1175,6 +1225,11 @@ ENDIF
  STA &20E
  LDA S%+3
  STA &20F \BRK,OSWRCH     
+
+\ *****************************************************************************
+\ Calls final boot code from value copied to stack
+\ *****************************************************************************
+
  RTS \- ON STACK 
 
 .AFOOL
@@ -1183,9 +1238,23 @@ ENDIF
 .M2
  EQUB 2
 
+\ *****************************************************************************
+\ IRQ1V handler for Timer 1 interrupt
+\ *****************************************************************************
+
 .VIA2
+
+\ *****************************************************************************
+\ Set ULA Control Register to 20 characters per line (MODE 5)
+\ *****************************************************************************
+
  LDA #4
  STA &FE20
+
+\ *****************************************************************************
+\ Set ULA Palette Registers for MODE 5 colour scheme
+\ *****************************************************************************
+
  LDY #11
 
 .inlp1
@@ -1197,9 +1266,17 @@ ENDIF
  TAY
  JMP (VEC)
 
+\ *****************************************************************************
+\ IRQ1V handler
+\ *****************************************************************************
+
 .IRQ1
  TYA
  PHA
+
+\ *****************************************************************************
+\ TAPE protection
+\ *****************************************************************************
 
 IF PROT AND DISC=0
  LDY #0
@@ -1223,6 +1300,10 @@ IF PROT AND DISC=0
 .itdone
 ENDIF
 
+\ *****************************************************************************
+\ Test which interrupt has occurred
+\ *****************************************************************************
+
  LDA VIA+&D
  BIT M2
  BNE LINSCN
@@ -1232,14 +1313,32 @@ ENDIF
  TAY
  JMP (VEC)
 
+\ *****************************************************************************
+\ IRQ1V handler for Vsync interrupt
+\ *****************************************************************************
+
 .LINSCN
+
+\ *****************************************************************************
+\ Reset Timer 1 counter value Hi and Low bytes
+\ *****************************************************************************
+
  LDA #50
  STA USVIA+4
  LDA #VSCAN
  STA USVIA+5
+
+\ *****************************************************************************
+\ Set ULA Control Register to 40 characters per line (MODE 4)
+\ *****************************************************************************
+
  LDA #8
  STA &FE20
  LDY #11
+
+\ *****************************************************************************
+\ Set ULA Palette Registers for MODE 4 black & white
+\ *****************************************************************************
 
 .inlp2
  LDA block2,Y
@@ -1255,11 +1354,15 @@ ENDIF
 \ *****************************************************************************
 
 .BLOCK \ Pushed onto stack for execution   
- EQUW ENTRY2-1
- EQUW 512-len+BLOCK-ENDBLOCK+3
+ EQUW ENTRY2-1                  ; return address for ENTRY2
+ EQUW 512-len+BLOCK-ENDBLOCK+3  ; return address for final boot code (below)
 
 \ *****************************************************************************
-\ Code starts at &163
+\ Final boot code starts at &163
+\ *****************************************************************************
+
+\ *****************************************************************************
+\ Disable SYSVIA interrupts Timer2, CB1, CB2, CA2
 \ *****************************************************************************
 
  LDA VIA+4
@@ -1273,6 +1376,11 @@ ENDIF
 \STAVEC
 \LDAIRQ1V+1
 \STAVEC+1  Already done
+
+\ *****************************************************************************
+\ Set IRQ1V to IRQ1 fn in elite-source.asm & set Timer 1 Counter Hi value
+\ *****************************************************************************
+
  LDA S%+4
  STA IRQ1V
  LDA S%+5
@@ -1284,10 +1392,18 @@ ENDIF
 \LDA#&81LDY#FFLDX#1JSROSBYTETXAEOR#FFSTAMOS \FF if MOS0.1 else 0
 \BMIBLAST
 
+\ *****************************************************************************
+\ Disable ESCAPE, memory cleared on BREAK (via OSBYTE 200)
+\ *****************************************************************************
+
  LDY #0
  LDA #200
  LDX #3
  JSR OSBYTE
+
+\ *****************************************************************************
+\ Calculate Checksum0 = 70x pages of all Elite code from &F40 to &5540
+\ *****************************************************************************
 
 .BLAST \break,escape
  LDA #(S% DIV256)
@@ -1308,6 +1424,10 @@ ENDIF
  BPL CHK
  CMP D%-1
  BEQ itsOK
+
+\ *****************************************************************************
+\ Checksum wrong - disable all interrupts and reset machine
+\ *****************************************************************************
 
 .nononono
  STA S%+1
@@ -1330,7 +1450,7 @@ ENDIF
  TYA
 
 \ *****************************************************************************
-\ Verify MAINSUM = 4 pages from XXX to XXX
+\ Verify MAINSUM of WORDS9 = 4 pages from &400 to &800
 \ *****************************************************************************
 
 .CHKq
@@ -1345,7 +1465,7 @@ ENDIF
  BNE nononono
 
 \ *****************************************************************************
-\ Verify checksum of LBL in elite-bcfs.asm (ELThead)
+\ Verify (hard coded) checksum of LBL in elite-bcfs.asm (ELThead)
 \ *****************************************************************************
 
  TYA
@@ -1372,11 +1492,19 @@ ENDIF
 
 .ENDBLOCK \ no more on to stack
 
+\ *****************************************************************************
+\ Variables used by PRINT function
+\ *****************************************************************************
+
 .XC
  EQUB 7
 
 .YC
  EQUB 6
+
+\ *****************************************************************************
+\ LOADER END
+\ *****************************************************************************
 
 \\ We assembled a block of code at &B00
 \\ Need to copy this up to end of main code
@@ -1387,24 +1515,18 @@ PRINT "BLOCK_offset =", ~(BLOCK - LE%) + (UU% - CODE)
 PRINT "ENDBLOCK_offset =",~(ENDBLOCK - LE%) + (UU% - CODE)
 PRINT "MAINSUM_offset =",~(MAINSUM - LE%) + (UU% - CODE)
 PRINT "TUT_ofset =",~(TUT - LE%) + (UU% - CODE)
-
-\\ Further processing completed by BCFS.PY script
-
-\\ Reverse bytes between BLOCK and ENDBLOCK
-\\ Count &400 bytes for checksum
-\\ Count some more bytes for another checksum
-\\ EOR code bytes 
-\\ EOR code words
-\\ EOR data block
-
 PRINT "UU%=",~UU%," Q%=",~Q%, " OSB=",~OSB
+
+\\ Further processing completed by elite-checksum.py script
 
 PRINT "Memory usage: ", ~LE%, " - ",~P%
 PRINT "Stack: ",len+ENDBLOCK-BLOCK
 
 ;OSCLI("S.:0.ELITE "+STR$~CODE +" "+STR$~O% +" "+STR$~run +" "+STR$~LL%)
 
-\\ Save ELITE loader
+\ *****************************************************************************
+\ Save ELITE loader
+\ *****************************************************************************
 
 PRINT "S. ELITE ",~CODE," ",~UU%+(P%-LE%)," ",~run," ",~LL%
 SAVE "output/ELITE.unprot.bin", CODE, UU%+(P%-LE%), run, LL%
