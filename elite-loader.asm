@@ -2,8 +2,11 @@
 \* Source Code for ELITE  (the loader)
 \ *****************************************************************************
 
-DISC=TRUE
-PROT=FALSE
+DISC = TRUE     ; load above DFS and relocate down
+PROT = FALSE    ; TAPE protection
+
+_REMOVE_CHECKSUMS = TRUE
+
 HIMEM=&4000
 ;DIMTEMP%256
 LOD%=&1100      ; load address of ELTcode (elite-bcfs.asm)
@@ -188,7 +191,7 @@ ENDMACRO
  CLD
 
 .David23
- EQUW (512-len)     ; start of fn pushed onto stack (&1DF)
+ EQUW (512-len)     ; start of DOMOVE fn pushed onto stack (&1DF)
 
 \ *****************************************************************************
 \ Set up PROT1 fn to work correctly and set V219 to OSBPUT vector address
@@ -281,7 +284,7 @@ ENDIF
  BPL purge
 
 \ *****************************************************************************
-\ Make NETV and RTS
+\ Make NETV an RTS
 \ *****************************************************************************
 
  LDA #&60
@@ -648,11 +651,15 @@ ENDIF
 \ Read key with time limit (via OSBYTE &81)
 \ *****************************************************************************
 
-IF DISC
+IF DISC 
  LDA #&81
  STA &FE4E
  LDY #20
+ IF _REMOVE_CHECKSUMS
+ NOP:NOP:NOP
+ ELSE
  JSR OSBYTE
+ ENDIF
  LDA #1
  STA &FE4E
 ENDIF
@@ -912,7 +919,11 @@ ENDIF
  EQUB &99 \STA,Y
  EQUB (TUT DIV256)
  EQUB (TUT MOD256)
+IF _REMOVE_CHECKSUMS
+ EQUB &B9 \LDA,Y
+ELSE
  EQUB &59 \EOR,Y
+ENDIF
  PHA
  EQUB ((BLOCK)DIV256)
  EQUB ((BLOCK)MOD256)
@@ -948,9 +959,13 @@ ENDIF
  DEY
  EQUB P
  EQUB &91 \STA(),Y
+IF _REMOVE_CHECKSUMS
+ NOP:NOP:NOP
+ELSE
  EQUB (OSB DIV256)
  EQUB (OSB MOD256)
  EQUB &59 \EOR
+ENDIF
  EQUB ZP
  EQUB &B1 \LDA(),Y        \ 18 Bytes ^ Stack
  
@@ -1161,7 +1176,7 @@ ENDIF
  JSR AFOOL
 
 \ *****************************************************************************
-\ Issue OSCLI command is MESS1 "*L.ELTcode 1100"
+\ Issue OSCLI command in MESS1 "*L.ELTcode 1100"
 \ *****************************************************************************
 
  JSR command
@@ -1188,7 +1203,7 @@ ENDIF
  STA svn
 
 \ *****************************************************************************
-\ Decrypt and copy down all ELITE code from &1128 to &F40
+\ Decrypt and copy down all ELITE game code from &1128 to &F40
 \ *****************************************************************************
 
  LDX #(LC% DIV256)
@@ -1204,7 +1219,11 @@ ENDIF
 
 .ML1
  TYA
+IF _REMOVE_CHECKSUMS
+ LDA (ZP),Y
+ELSE
  EOR (ZP),Y
+ENDIF
  STA (P),Y
  INY 
  BNE ML1
@@ -1422,7 +1441,11 @@ ENDIF
  INC ZP+1
  DEX
  BPL CHK
+IF _REMOVE_CHECKSUMS
+ LDA #0:NOP
+ELSE
  CMP D%-1
+ENDIF
  BEQ itsOK
 
 \ *****************************************************************************
@@ -1462,7 +1485,11 @@ ENDIF
  DEX
  BNE CHKq
  CMP MAINSUM+1
+IF _REMOVE_CHECKSUMS
+ NOP:NOP
+ELSE
  BNE nononono
+ENDIF
 
 \ *****************************************************************************
 \ Verify (hard coded) checksum of LBL in elite-bcfs.asm (ELThead)
@@ -1476,7 +1503,11 @@ ENDIF
  CPY #&28
  BNE CHKb
  CMP MAINSUM
+IF _REMOVE_CHECKSUMS
+ NOP:NOP
+ELSE
  BNE nononono
+ENDIF
 
 IF PROT AND DISC=0
  LDA BLCNT
@@ -1488,7 +1519,11 @@ ENDIF
 \ Call LBL in elite-bcfs.sm (ELThead) to verify CHECKbyt checksum
 \ *****************************************************************************
 
+IF _REMOVE_CHECKSUMS
+ RTS:NOP:NOP
+ELSE
  JMP (CHECKV)
+ENDIF
 
 .ENDBLOCK \ no more on to stack
 

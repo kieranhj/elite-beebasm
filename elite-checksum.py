@@ -13,7 +13,15 @@ if (sys.version_info > (3, 0)):
 else:
 	from StringIO import StringIO as ByteBuffer
 
+argv = sys.argv
+argc = len(argv)
+Encrypt = True
+
+if argc > 1 and argv[1] == '-u':
+    Encrypt = False
+
 print "Elite Big Code File"
+print "Encryption = ", Encrypt
 
 data_block = bytearray()
 eliteb_offset = 0
@@ -43,6 +51,8 @@ for i in range(CH,0,-1):
 
 print "Commander checksum = ", CH
 
+# Must have Commander checksum otherwise game will lock:
+
 data_block[eliteb_offset + commander_offset] = CH ^ 0xA9
 data_block[eliteb_offset + commander_offset + 1] = CH
 
@@ -64,12 +74,15 @@ for n in range(0x0, 0x4600):
     checksum0 += data_block[n + 0x28]
 
 print "checksum 0 = ", checksum0
-data_block[checksum0_offset] = checksum0 % 256
+
+if Encrypt == True:
+    data_block[checksum0_offset] = checksum0 % 256
 
 # Encrypt data block
 
-for n in range(0x0, len(data_block) - 0x28):
-    data_block[n + 0x28] ^= (n % 256)
+if Encrypt == True:
+    for n in range(0x0, len(data_block) - 0x28):
+        data_block[n + 0x28] ^= (n % 256)
 
 # Calculate checksum1
 
@@ -117,7 +130,8 @@ for i in range(0,0x400):
 
 print "MAINSUM = ", MAINSUM
 
-loader_block[MAINSUM_offset + 1] = MAINSUM % 256
+if Encrypt == True:
+    loader_block[MAINSUM_offset + 1] = MAINSUM % 256
 
 # Compute CHECKbyt
 
@@ -128,27 +142,29 @@ for i in range(1,384):
 
 print "CHECKbyt = ", CHECKbyt
 
-loader_block[CHECKbyt_offset] = CHECKbyt % 256
+if Encrypt == True:
+    loader_block[CHECKbyt_offset] = CHECKbyt % 256
 
-print "Encypting..."
+if Encrypt == True:
+    print "Encypting..."
 
-#  EOR TUT BLOCK (offset = 0x13e1)
+    #  EOR TUT BLOCK (offset = 0x13e1)
 
-for i in range(0,ENDBLOCK_offset - BLOCK_offset):
-    loader_block[0x13e1 + i] ^= loader_block[BLOCK_offset + i]
+    for i in range(0,ENDBLOCK_offset - BLOCK_offset):
+        loader_block[0x13e1 + i] ^= loader_block[BLOCK_offset + i]
 
-# EOR CODE words (offset = 0xf86)
+    # EOR CODE words (offset = 0xf86)
 
-for i in range(0,2):
-    for j in range(0,256):
-        if (j + i * 256 + CHECKbyt_offset) < len(loader_block):
-            loader_block[j + i * 256 + CHECKbyt_offset] ^= loader_block[j + 0xf86]
+    for i in range(0,2):
+        for j in range(0,256):
+            if (j + i * 256 + CHECKbyt_offset) < len(loader_block):
+                loader_block[j + i * 256 + CHECKbyt_offset] ^= loader_block[j + 0xf86]
 
-# EOR DATA block at beginning of loader
+    # EOR DATA block at beginning of loader
 
-for i in range(0,0xf):
-    for j in range(0,256):
-        loader_block[j + i * 256] ^= loader_block[j + 0xf86]
+    for i in range(0,0xf):
+        for j in range(0,256):
+            loader_block[j + i * 256] ^= loader_block[j + 0xf86]
 
 # Write output file for 'ELITE'
 
