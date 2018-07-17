@@ -6,7 +6,7 @@ build:
 	$(BEEBASM) -i elite-source.asm -v > compile.txt
 	$(BEEBASM) -i elite-bcfs.asm -v >> compile.txt
 	$(BEEBASM) -i elite-loader.asm -v >> compile.txt
-	$(PYTHON) elite-checksum.py
+	$(PYTHON) elite-checksum.py -u
 	$(BEEBASM) -i elite-disc.asm -do elite.ssd -boot ELITE
 
 .PHONY:verify
