@@ -87,14 +87,20 @@ For now a simple DOS Batch file `make.bat` will perform the following commands:
 %BEEBASM% -i elite-source.asm -v
 %BEEBASM% -i elite-bcfs.asm -v
 %BEEBASM% -i elite-loader.asm -v
-%PYTHON% elite-checksum.py
+%PYTHON% elite-checksum.py -u
 %BEEBASM% -i elite-disc.asm -do elite.ssd -boot ELITE
 ```
 Simply define the location of your `beebasm.exe` and `python.exe` at the head of the batch file. All being well this will output `elite.ssd` which will boot the game.
 
+A GNU Makefile is provided for non-Windows systems; just type `make build`.
+
+Note that by defaut an _unencrypted_ version of the game will be built, to allow modification, and will therefore not be identical to the extracted binaries.
+
 ## Verify
 
-The `crc32dos.exe` is included to verify that the output files are binary identical with the original sources.
+The Python script `crc32.py` is included to verify that the output files are binary identical with the original sources.
+
+The DOS Batch file `verify.py` will make an encrypted version of the binaries as per the original BBC BASIC build system.
 
 The following built binaries were extracted from the [Cassette sources disk image](http://www.elitehomepage.org/archive/a/a4080602.zip):
 
@@ -178,12 +184,15 @@ A decision was made to structure the `elite-source.asm` file so that the final `
 
 Although the binary files output are identical, the build process is *brittle* meaning that the source cannot be altered. The main problem is that the encrytion process does not have knowledge of the symbols produced by the assembler, so these values have been hard coded for temporary convenience.
 
+_Update:_ The checksum code and encryption has been removed to allow modification of the game code in `elite-source.asm`. However, the build process will likely fail if the `elite-loader.asm` file is modified in any non-trivial way.
+
 The next steps are:
 
-- Remove code requiring checksums and copy protection to allow source to be modified freely
 - ~~Improve whitespacing for readability~~
+- ~~Commenting of critical functions in Elite loader code~~
+- ~~Remove loader code requiring checksums and copy protection to allow game source to be modified freely~~
+- Commenting of critical functions in Elite game code
 - Improve label names for readability
-- Commenting of critical functions
 - Add BBC Disk, Master and 2nd processor versions to build
 
 I am fully open to PR's if anyone feels like contributing to this project!
