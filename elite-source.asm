@@ -1,36 +1,57 @@
-\************************************************
+\ *****************************************************************************
+\* ELITE GAME SOURCE
+\ *****************************************************************************
+
+INCLUDE "elite-header.h.asm"
+
+_REMOVE_COMMANDER_CHECK = TRUE AND _REMOVE_CHECKSUMS
+_ENABLE_MAX_COMMANDER = TRUE AND _REMOVE_CHECKSUMS
+
+\ *****************************************************************************
 \* ELITE<A>
-\************************************************
+\ *****************************************************************************
 
 LOMEM=&3D70
-C_A%=&F40
-W%=&7200
-L%=&1128
+C_A%=&F40   ; assemble code address
+W%=&7200    ; top of available memory during BASIC assembly
+L%=&1128    ; not really execution address
 HIMEM=W%
 \Z=0
-D%=&563A
+\D%=&563A   ; hardcoded size of Elite game code
 WP=&D40
 K%=&900
 LS%=WP-1
-QQ18=&400
+QQ18=&400   ; WORDS9
 T%=&300
 
 NOST=18
 NOSH=12
 COPS=2
 SH3=COPS
-CYL=7
-THG=6
-SST=8
-MSL=9
-AST=10
-OIL=11
-TGL=12
-ESC=13
+
+; 1 =
+; 2 = VIPER
+; 3 =
+; 4 =
+; 5 =
+; 6 =
+CYL=7       ; Cobra Mk III
+THG=6       ; Thargoid
+SST=8       ; NOT A SHIP
+MSL=9       ; Missile
+AST=10      ; Asteroid
+OIL=11      ; Container
+TGL=12      ; Little Thargoid?
+ESC=13      ; Escape Pod
+
 NI%=36
 POW=15
 B=&30
 FF=&FF
+
+\ *****************************************************************************
+\ * MOS Defines
+\ *****************************************************************************
 
 OSWRCH=&FFEE
 OSBYTE=&FFF4
@@ -42,12 +63,15 @@ USVIA=VIA
 IRQ1V=&204
 VSCAN=57
 
-XX21=D%
+;XX21=D%        ; don't hard code this
 ZP=0
 X=128
 Y=96
 
-\\ ZERO PAGE
+\ *****************************************************************************
+\ * ZERO PAGE VARIABLES
+\ *****************************************************************************
+
 org ZP
 .RAND   skip 4  ;=FNZT(4)
 .TRTB%  skip 2  ;	skip 2	;=FNZ2
@@ -157,7 +181,10 @@ PRINT "ZERO PAGE VARIABLES FROM ",~ZP," to ",~P%
 
 ;IFZ=4THENZ=6ELSEZ=4
 
-\\ WORKSPACE at WP=&D40
+\ *****************************************************************************
+\ * WORKSPACE AT WP = &D40
+\ *****************************************************************************
+
 org WP
 .FRIN   skip NOSH+1 ;=FNWT(NOSH+1)
 .MANY   skip 14 ;=FNWT(14)
@@ -226,7 +253,10 @@ svn=&7FFD
 
 PRINT "WP WORKSPACE FROM ",~WP," to ",~P%
 
-\\ WORKSPACE at T%=&300
+\ *****************************************************************************
+\ * WORKSPACE AT T% = &300
+\ *****************************************************************************
+
 ORG T%
 .TP	    skip 1	;=FNTP
 .QQ0	skip 1	;=FNTP
@@ -261,6 +291,8 @@ XX3=256
 \\REM&70
 
 PRINT "T% WORKSPACE FROM ",~T%," to ",~P%," possibly ",~SXL
+
+\ BASIC MACROS
 
 \ ZP allocations
 \DEFFNZ=FNZT(1)
@@ -1587,7 +1619,7 @@ PRINT "A d,";
 ;O%=W%
 C_B%=P%
 H_B%=L%+P%-C_A%
-Q%=FALSE
+Q%=_ENABLE_MAX_COMMANDER
 J%=P%
 
 \[OPTZ
@@ -1603,9 +1635,9 @@ J%=P%
  EQUW &B753 \Base seed
 ;EQUD(((&E8030000)AND(NOTQ%))+((&CA9A3B)ANDQ%))\CASH,&80969800
 IF Q%
- EQUD &CA9A3B
+ EQUD &CA9A3B   \CASH
 ELSE
- EQUD &E8030000
+ EQUD &E8030000 \CASH
 ENDIF
  EQUB 70 ;fuel
  EQUB 0 ;COK-UP
@@ -6868,7 +6900,7 @@ MAPCHAR '4', '4'
  BPL TT53
  LDY #3
  BIT QQ15
-BVSP%+3
+ BVS P%+3
  DEY
  STY T
 
@@ -6971,15 +7003,15 @@ BVSP%+3
  BEQ tal
  DEX
  BEQ ypl
-dex
-bneP%+5
+ dex
+ bne P%+5
  JMP cpl
-dex
-beqcmn
-dex
-beqfwl
-dex
-bneP%+7
+ dex
+ beq cmn
+ dex
+ beq fwl
+ dex
+ bne P%+7
  LDA #128
  STA QQ17
  RTS
@@ -6988,8 +7020,9 @@ bneP%+7
  BNE P%+5
  STX QQ17
  RTS
-dex
-beqcrlf
+
+ dex
+ beq crlf
  CMP #&60
  BCS ex
  CMP #14
@@ -7001,7 +7034,7 @@ beqcrlf
  BEQ TT74
  BMI TT41
  BIT QQ17
-BVSTT46
+ BVS TT46
 
 .TT42
  CMP #65
@@ -7015,7 +7048,7 @@ BVSTT46
 
 .TT41
  BIT QQ17
-BVSTT45
+ BVS TT45
  CMP #65
  BCC TT74
  PHA
@@ -7067,7 +7100,12 @@ BVSTT45
 .TT47
  SBC #160
 
+\ *****************************************************************************
+\* DISPLAY STRING?
+\ *****************************************************************************
+
 .ex
+{
  TAX
  LDA #(QQ18 MOD256)
  STA V
@@ -7112,6 +7150,7 @@ BVSTT45
  INC V+1
  LDA (V),Y
  BNE TT50
+}
 
 .TT48
  RTS
@@ -8955,7 +8994,7 @@ H_F%=L%+P%-C_A%
  ROL INWK+1
 
  JSR DORND
-BVSMTT4
+ BVS MTT4
  ORA #&6F
  STA INWK+29
  LDA SSPR
@@ -9288,12 +9327,17 @@ TXS
  LDX #3
  STX XC
  JSR FX200
+
  LDX #CYL
  LDA #128
  JSR TITLE
  CMP #&44
  BNE QU5
 \BR1 LDX#3STXXCJSRFX200LDA#1JSRTT66JSRFLKB
+
+\ *****************************************************************************
+\ * Load new Commander
+\ *****************************************************************************
 
 \LDA#14JSRTT214BCCQU5
  JSR GTNME
@@ -9313,7 +9357,11 @@ TXS
  STX QQ11
  JSR CHECK
  CMP CHK
+IF _REMOVE_COMMANDER_CHECK
+ NOP:NOP
+ELSE
  BNE P%-6
+ENDIF
  EOR #&A9
  TAX
  LDA COK
@@ -9337,7 +9385,12 @@ TXS
  LDA #f8
  JMP FRCE
 
+\ *****************************************************************************
+\ * TITLE SCREEN, X=SHIP TYPE, A=MESSAGE STRING
+\ *****************************************************************************
+
 .TITLE
+{
  PHA
  STX TYPE
  JSR RESET
@@ -9408,6 +9461,7 @@ TXS
 .TL2
  DEC JSTK
  RTS
+}
 
 .CHECK
  LDX #NT%-2
@@ -9439,6 +9493,10 @@ TXS
  DEX
  BPL GTL2
  RTS
+
+\ *****************************************************************************
+\ * GET NAME (OF COMMANDER)
+\ *****************************************************************************
 
 .GTNME
  LDA #1
@@ -9489,7 +9547,12 @@ TXS
  BNE ZEL1
  RTS
 
+\ *****************************************************************************
+\ * SAVE COMMANDER
+\ *****************************************************************************
+
 .SVE
+{
  JSR GTNME
  JSR TRNME
  JSR ZERO
@@ -9536,12 +9599,17 @@ TXS
  LDX #0\STXVIA+&EDEX
  STX svn
  JMP BAY
+}
 
 .QUS1
  LDX #INWK
  STX &C00
  LDX #0
  JMP OSFILE
+
+\ *****************************************************************************
+\ * Load new Commander
+\ *****************************************************************************
 
 .LOD
  LDX #2
@@ -9563,6 +9631,10 @@ TXS
  DEX
  BPL LOL1
  LDX #3
+
+\ *****************************************************************************
+\ * *FX200,X
+\ *****************************************************************************
 
 .FX200
 \MOS
@@ -11872,5 +11944,16 @@ PRINT "RELOAD AT H%=", ~H_G%
 PRINT "S.ELTG ",~C_G%," ",~P%," ",~L%," ",~H_G%
 SAVE "output/ELTG.bin", C_G%, P%, L%
 
-PRINT ~C_A%, ~F%, ~S%, ~(D%-F%)
 PRINT "G d."
+
+\\ GUARD top of memory
+
+.checksum0
+SKIP 1
+.XX21
+INCBIN "data/SHIPS.bin"
+
+PRINT "XX21=",~XX21
+PRINT "P%=",~P%
+
+PRINT "ELITE GAME CODE ", ~(&6000-P%), "BYTES FREE"
