@@ -153,6 +153,8 @@ K6=K5+4
 .RAT2	skip 1	;=FNZ
 .K2     skip 4  ;=FNZT(4)
 
+PRINT "ZERO PAGE VARIABLES FROM ",~ZP," to ",~P%
+
 ;IFZ=4THENZ=6ELSEZ=4
 
 \\ WORKSPACE at WP=&D40
@@ -222,6 +224,8 @@ svn=&7FFD
 .QQ10	skip 1	;=FNW
 .NOSTM	skip 1	;=FNW
 
+PRINT "WP WORKSPACE FROM ",~WP," to ",~P%
+
 \\ WORKSPACE at T%=&300
 ORG T%
 .TP	    skip 1	;=FNTP
@@ -256,6 +260,8 @@ SXL=SX+NOST+1
 XX3=256
 \\REM&70
 
+PRINT "T% WORKSPACE FROM ",~T%," to ",~P%," possibly ",~SXL
+
 \ ZP allocations
 \DEFFNZ=FNZT(1)
 \DEFFNZ2=FNZT(2)
@@ -280,14 +286,15 @@ XX3=256
 ;O%=W%
 ORG C_A%
 H_A%=L%           ;+P%-C% as P%=C% above
+GUARD &6000       ; Screen buffer starts here
 
 \[OPTZ
 
 .S%
- EQUW TT170
- EQUW TT26
- EQUW IRQ1
- EQUW BR1
+ EQUW TT170       ; entry point for Elite game
+ EQUW TT26        ; WRCHV
+ EQUW IRQ1        ; IRQ1V
+ EQUW BR1         ; BRKV
 
 .COMC brk
 .DNOIZ brk
@@ -9268,9 +9275,13 @@ TXS
 .DEATH2
  JSR RES2
 
+\ *****************************************************************************
+\ * Entry point for Elite game code
+\ *****************************************************************************
+
 .TT170
  LDX #FF
-TXS
+ TXS
 
 .BR1
  LDX #3
@@ -11860,5 +11871,5 @@ PRINT "RELOAD AT H%=", ~H_G%
 PRINT "S.ELTG ",~C_G%," ",~P%," ",~L%," ",~H_G%
 SAVE "output/ELTG.bin", C_G%, P%, L%
 
-PRINT ~C_A%, F%, S%,D%-F%
+PRINT ~C_A%, ~F%, ~S%, ~(D%-F%)
 PRINT "G d."
