@@ -2,10 +2,10 @@
 \* Source Code for ELITE  (the loader)
 \ *****************************************************************************
 
+INCLUDE "elite-header.h.asm"
+
 DISC = TRUE     ; load above DFS and relocate down
 PROT = FALSE    ; TAPE protection
-
-_REMOVE_CHECKSUMS = TRUE
 
 HIMEM=&4000
 ;DIMTEMP%256

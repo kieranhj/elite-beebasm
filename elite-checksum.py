@@ -53,8 +53,11 @@ print "Commander checksum = ", CH
 
 # Must have Commander checksum otherwise game will lock:
 
-data_block[eliteb_offset + commander_offset] = CH ^ 0xA9
-data_block[eliteb_offset + commander_offset + 1] = CH
+if Encrypt == True:
+    data_block[eliteb_offset + commander_offset] = CH ^ 0xA9
+    data_block[eliteb_offset + commander_offset + 1] = CH
+else:
+    print "WARNING! Commander checksum must be copied into elite-source.asm as CH% = ", CH
 
 # Skip one byte for checksum0
 
@@ -102,7 +105,7 @@ output_file = None
 data_block = None
 
 # Start again but for loader
-print "Elite Loader Encyption"
+print "Elite Loader Checksums"
 
 loader_block = bytearray()
 
