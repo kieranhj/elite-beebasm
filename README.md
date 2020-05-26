@@ -13,6 +13,8 @@ The following archives are available:
 - [Elite 2 ship sources](http://www.elitehomepage.org/archive/a/b80000C0.zip) as DFS disk image
 - [Original BBC Disk version](http://www.elitehomepage.org/archive/a/a4100000.zip) of Elite (game only)
 - [Master 128 and 2nd Processor versions](http://www.elitehomepage.org/archive/a/b8020001.zip) of Elite (game only)
+- [BBC disk source (docked) annotated by Paul Brink](http://www.elitehomepage.org/archive/a/d4090010.txt) as text file
+- [BBC disk source (flight) annotated by Paul Brink](http://www.elitehomepage.org/archive/a/d4090012.txt) as text file
 
 As the game was written on 8-bit machines with very limited RAM and disk storage (the game started life on an Acorn Atom) the source code is incredibly terse, densely packed and effectively unreadable to anyone but the original authors (even then, I'd imagine both would struggle some 30+ years later..!)
 
@@ -71,7 +73,7 @@ Secondly it performs the checksum and encryption functions from the `ELITES` loa
 
 - Reverse the bytes for a block of code that is placed on the stack
 - Compute checksum for MAINSUM
-` Poke checksum value into binary
+- Poke checksum value into binary
 - Comuter checksum for CHECKbyt
 - Poke checksum value into binary
 - Encrypt a block of code by XOR'ing with the code to be placed on the stack
