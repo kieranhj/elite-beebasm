@@ -1,3 +1,7 @@
+# On Windows beebasm is not on the PATH: use the shared D:\beeb\Bin copy.
+ifeq ($(OS),Windows_NT)
+BEEBASM?=..\..\Bin\beebasm.exe
+endif
 BEEBASM?=beebasm
 PYTHON?=python
 
